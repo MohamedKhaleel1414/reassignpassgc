@@ -3,9 +3,12 @@ import logo from "../assets/logo.png";
 import { useFormik } from "formik";
 import * as yup from "yup";
 import axios from "axios";
-import { useNavigate } from "react-router";
+import { useNavigate, useLocation } from "react-router";
+import swal from 'sweetalert'
 
 function Form() {
+  const location = useLocation().search
+  const params = location.split("=")
   const navigate = useNavigate();
   const updatePassFormik = useFormik({
     initialValues: {
@@ -27,6 +30,7 @@ function Form() {
     }),
     onSubmit: (values) => {
       let data = {
+        code: params[1],
         password: values.password,
       };
       axios
@@ -45,7 +49,10 @@ function Form() {
           console.log(res.data);
           navigate("/passwordsent");
         })
-        .catch((err) => console.log(err));
+        .catch((err) =>{
+          console.log(err)
+          swal("Password not saved. Try again")
+        });
     },
   });
   return (
